@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL JARAD</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
+    
+    <style>
+        body { 
+            background: #f8f9fa; 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+        
+        .sticky-header {
+            background: white;
+            padding: 15px 25px;
+            border-bottom: 2px solid #dee2e6;
+            z-index: 1050;
+            flex-shrink: 0;
+        }
+
+        .main-wrapper { 
+            display: flex; 
+            flex-grow: 1; 
+            overflow: hidden; 
+        }
+        
+        .editor-side { 
+            width: 75%; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            border-right: 2px solid #dee2e6; 
+            background: white; 
+            overflow-y: auto;
+        }
+        
+        .preview-side { 
+            width: 25%; 
+            padding: 20px; 
+            overflow-y: auto; 
+            background: #ffffff; 
+        }
+
+        .row-preview-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px dashed #ccc;
+        }
+
+        @media (max-width: 992px) {
+            body { overflow-y: auto; height: auto; }
+            .main-wrapper { 
+                flex-direction: column; 
+                height: auto; 
+                display: block; 
+            }
+            .sticky-header {
+                position: sticky;
+                top: 0;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            .editor-side, .preview-side { 
+                width: 100%; 
+                height: auto; 
+                overflow: visible; 
+                padding: 15px;
+            }
+            
+            .row-preview-container { 
+                display: flex; 
+                flex-direction: column; 
+            }
+            .row-preview-container label { 
+                font-size: 10px; 
+                font-weight: bold; 
+                color: #002d72;
+                margin-bottom: 5px; 
+                align-self: flex-start; 
+            }
+
+            .preview-side { 
+                display: none; 
+            }
+
+            .header-box {
+                padding: 8px !important;
+                margin-bottom: 10px !important; 
+            }
+
+            .header-box img { 
+                height: 25px !important; 
+            }
+
+            .header-box h4 {
+                font-size: 1.1rem !important; 
+            }
+
+            #inputTable thead {
+                display: none; 
+            }
+
+            #inputTable, #inputTable tbody, #inputTable tr, #inputTable td {
+                display: block; 
+                width: 100%; 
+            }
+
+            #inputTable tr { 
+                margin-bottom: 20px; 
+                border: 1px solid #002d72; 
+                border-radius: 10px; 
+                padding: 15px; 
+                background: #fff; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            #inputTable td { border: none; padding: 8px 0; position: relative; }
+            
+            #inputTable td:nth-of-type(1):before {
+                content: "ITEM DESCRIPTION"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+
+            #inputTable td:nth-of-type(2):before { 
+                content: "VALUE / CODE"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+
+            #inputTable td:nth-of-type(3):before { 
+                content: "STICKER SETTINGS"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+
+            #inputTable td:nth-of-type(4):before { 
+                content: "QUANTITY"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+        }
+
+        .header-box { 
+            background: #fff; 
+            color: #002d72; 
+            padding: 10px; 
+            text-align: center;
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            border: 1px solid #eee;
+        }
+
+        #print-area { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 15px; 
+        }
+
+        .sticker { 
+            width: 50mm; 
+            height: 25mm; 
+            border: 1px solid #ccc; 
+            padding: 2px; 
+            box-sizing: border-box; 
+            background: #fff;
+            display: flex; 
+            flex-shrink: 0; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+            overflow: hidden;
+            transform-origin: center;
+        }
+
+        .style-barcode { 
+            flex-direction: column; 
+            gap: 2px; 
+        }
+
+        .barcode-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+            height: 100%; 
+        }
+
+        .item-name-display { 
+            text-transform: uppercase; 
+            line-height: 1.1; 
+        }
+        .barcode-svg { 
+            width: 100%; 
+            height: 45px !important; 
+        }
+
+        .style-qrcode { 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+        }
+
+        .qr-col-left { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 2px; 
+            height: 100%; 
+        }
+
+        .brand-rotated { 
+            writing-mode: vertical-rl; 
+            transform: rotate(180deg); 
+            white-space: nowrap; 
+        }
+        
+        .qr-logo-img {
+            max-height: 55px; 
+            max-width: 55px; 
+            object-fit: contain; 
+        }
+
+        .qr-since-text { 
+            font-size: 6pt; 
+            color: #666; 
+            font-weight: bold; 
+        }
+
+        .qr-name-text-vertical { 
+            writing-mode: vertical-rl;
+            transform: rotate(180deg); 
+            text-transform: uppercase; 
+            white-space: nowrap; 
+        }
+
+        .qr-col-right { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100%; 
+        }
+
+        .qr-code-box {
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .qr-code-box canvas { 
+            max-width: 75px !important; 
+            max-height: 75px !important; 
+        }
+
+        th { 
+            background: #002d72 !important; 
+            color: white !important; 
+            padding: 12px; 
+            font-size: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+        }
+
+        .footer-banner { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: #000080; 
+            color: white; 
+            text-align: center; 
+            padding: 5px; 
+            font-size: 14px; 
+            z-index: 1000; 
+        }
+
+        @media print {
+            .sticky-header, .no-print, .footer-banner, .row-preview-container { 
+                display: none !important; 
+            }
+
+            body {
+                background: white; 
+                display: block; 
+                height: auto; 
+            }
+
+            .main-wrapper { 
+                display: block; 
+            }
+
+            .preview-side { 
+                width: 100%; 
+                padding: 0; 
+                display: block !important; 
+            }
+
+            .sticker { 
+                border: none; 
+                margin: 0 auto; 
+                page-break-after: always; 
+            }
+
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="sticky-header no-print">
+    <div class="header-box shadow-sm mb-3">
+        <div class="d-flex align-items-center justify-content-center gap-3">
+            <img src="logo.png" alt="Logo" style="height: 40px;" onerror="this.style.display='none'">
+            <h4 class="m-0 fw-bold">AL JARAD</h4>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-md-9">
+            <button onclick="addRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
+        </div>
+        <div class="col-12 col-md-3">
+            <button onclick="handlePrint()" class="btn btn-outline-success w-100 fw-bold py-2 shadow">PRINT</button>
+        </div>
+    </div>
+</div>
+
+<div class="main-wrapper">
+    <div class="editor-side no-print">
+        <div class="table-container">
+            <table class="table table-bordered align-middle" id="inputTable">
+                <thead>
+                    <tr>
+                        <th style="min-width: 250px;">ITEM DESCRIPTION</th>
+                        <th style="min-width: 150px;">VALUE / CODE</th>
+                        <th style="min-width: 220px;">SETTINGS</th>
+                        <th style="width: 100px;">QTY</th>
+                        <th style="width: 50px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control in-name mb-2" oninput="updatePreview()" placeholder="Text">
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updatePreview()" title="Font Size" style="width: 60px;">
+                                <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updatePreview()" title="Text Color" style="width: 40px; padding: 2px;">
+                                <div class="form-check pt-1">
+                                    <input class="form-check-input check-bold" type="checkbox" checked onchange="updatePreview()">
+                                    <label class="form-check-label small">Bold</label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control in-barcode mb-2" oninput="updatePreview()" placeholder="Code Value">
+                            <select class="form-select form-select-sm type-select" onchange="updatePreview()">
+                                    <option value="barcode">Barcode</option>
+                                    <option value="qrcode">QR Code</option>
+                                    <option value="microqrcode">Micro QR</option>
+                                    <option value="azteccode">Aztec Code</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex gap-3 mb-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input check-logo" type="checkbox" checked onchange="updatePreview()">
+                                        <label class="form-check-label small">Logo</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input check-brand" type="checkbox" checked onchange="updatePreview()">
+                                        <label class="form-check-label small">Brand</label>
+                                    </div>
+                                </div>
+                                <div class="brand-config border-top pt-2">
+                                    <label class="small fw-bold d-block mb-1">Brand Style:</label>
+                                    <div class="d-flex gap-1 align-items-center mb-1">
+                                        <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updatePreview()" title="Brand Size" style="width:50px">
+                                        <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updatePreview()" title="Brand Color" style="width:40px; padding:2px;">
+                                        <div class="form-check ms-1">
+                                            <input class="form-check-input brand-bold" type="checkbox" checked onchange="updatePreview()">
+                                            <label class="form-check-label small">B</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-preview-container">
+                                    <label>LIVE STICKER PREVIEW</label>
+                                    <div class="row-preview-target"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
+                        <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="preview-side border-start shadow-sm">
+        <h6 class="text-center text-muted mb-3 no-print">LIVE PREVIEW</h6>
+        <div id="print-area"></div>
+    </div>
+
+    <div class="footer-banner no-print">Developed By Muhsin</div>
+</div>
+
+<script>
+    function addRow() {
+        const tbody = document.querySelector("#inputTable tbody");
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>
+                <input type="text" class="form-control in-name mb-2" oninput="updatePreview()" placeholder="Item Name">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updatePreview()" title="Font Size" style="width:60px;">
+                    <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updatePreview()" title="Text Color" style="width:40px; padding:2px;">
+                    <div class="form-check pt-1">
+                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updatePreview()">
+                        <label class="form-check-label small">Bold</label>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="form-control in-barcode mb-2" oninput="updatePreview()" placeholder="Code Value">
+                <select class="form-select form-select-sm type-select" onchange="updatePreview()">
+                        <option value="barcode">Barcode (Code 128)</option>
+                        <option value="qrcode">QR Code</option>
+                        <option value="microqrcode">Micro QR</option>
+                        <option value="azteccode">Aztec Code</option>
+                </select>
+            </td>
+            <td>
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex gap-3 mb-1">
+                        <div class="form-check">
+                            <input class="form-check-input check-logo" type="checkbox" checked onchange="updatePreview()">
+                            <label class="form-check-label small">Logo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input check-brand" type="checkbox" checked onchange="updatePreview()">
+                            <label class="form-check-label small">Brand</label>
+                        </div>
+                    </div>
+                    <div class="brand-config border-top pt-2">
+                        <label class="small fw-bold d-block mb-1">Brand Style:</label>
+                        <div class="d-flex gap-1 align-items-center mb-1">
+                            <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updatePreview()" style="width:50px">
+                            <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updatePreview()" style="width:40px; padding:2px;">
+                            <div class="form-check ms-1">
+                                <input class="form-check-input brand-bold" type="checkbox" checked onchange="updatePreview()">
+                                <label class="form-check-label small">B</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-preview-container">
+                        <label>LIVE STICKER PREVIEW</label>
+                        <div class="row-preview-target"></div>
+                    </div>
+                </div>
+            </td>
+            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
+            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>`;
+            
+        const editor = document.querySelector('.editor-side');
+        editor.scrollTop = editor.scrollHeight;
+        updatePreview();
+    }
+
+    function deleteRow(btn) {
+        if (document.querySelectorAll("#inputTable tbody tr").length > 1) {
+            btn.closest('tr').remove();
+            updatePreview();
+        }
+    }
+
+    function createStickerElement(row, isFullPrint) {
+        const name = row.querySelector('.in-name').value.trim();
+        const val = row.querySelector('.in-barcode').value.trim();
+        const showLogo = row.querySelector('.check-logo').checked;
+        const showBrand = row.querySelector('.check-brand').checked;
+        const isBold = row.querySelector('.check-bold').checked;
+        const fontSize = row.querySelector('.in-font-size').value + 'pt';
+        const textColor = row.querySelector('.in-text-color').value;
+        const codeType = row.querySelector('.type-select').value;
+        const brandFontSize = row.querySelector('.brand-font-size').value + 'pt';
+        const brandColor = row.querySelector('.brand-color').value;
+        const brandIsBold = row.querySelector('.brand-bold').checked;
+        const brandStyle = `font-size: ${brandFontSize}; color: ${brandColor}; font-weight: ${brandIsBold ? 'bold' : 'normal'};`;
+        
+        const sticker = document.createElement('div');
+        const id = "c-" + Math.random().toString(36).substr(2, 7);
+        const nameStyle = `font-size: ${fontSize}; font-weight: ${isBold ? 'bold' : 'normal'}; color: ${textColor};`;
+
+        if (codeType === 'barcode') {
+            sticker.className = 'sticker style-barcode';
+            let html = '<div class="barcode-container">';
+            if(showLogo || showBrand) {
+                html += `<div class="d-flex align-items-center justify-content-center gap-1 mb-1">`;
+                if(showLogo) html += `<img src="logo.png" style="height:16px;" onerror="this.style.display='none'">`;
+                if(showBrand) html += `<span style="${brandStyle}">AL JARAD</span>`;
+                html += `</div>`;
+            }
+            if(name) html += `<div class="item-name-display" style="${nameStyle}">${name}</div>`;
+            if(val) html += `<svg class="barcode-svg" id="${id}"></svg>`;
+            html += '</div>';
+            sticker.innerHTML = html;
+        } else {
+            sticker.className = 'sticker style-qrcode';
+            let brandHtml = '';
+            if (showBrand) {
+                const brandClass = !showLogo ? 'brand-rotated' : '';
+                brandHtml = `<div class="${brandClass}" style="${brandStyle}">AL JARAD</div>`;
+            }
+
+            sticker.innerHTML = `
+                <div class="qr-col-left">
+                    ${brandHtml}
+                    ${showLogo ? `<img src="logo.png" class="qr-logo-img" onerror="this.style.display='none'">` : ''}
+                    ${showLogo ? `<div class="qr-since-text">SINCE 1986</div>` : ''}
+                </div>
+                ${name ? `<div class="qr-col-center"><div class="qr-name-text-vertical" style="${nameStyle}">${name}</div></div>` : ''}
+                <div class="qr-col-right">
+                    <div class="qr-code-box" id="box-${id}"><canvas id="${id}"></canvas></div>
+                </div>
+            `;
+        }
+
+        return { element: sticker, id: id, val: val, type: codeType };
+    }
+
+    function renderCode(id, val, type) {
+        if (!val) return;
+        try {
+            if (type === 'barcode') {
+                JsBarcode(`#${id}`, val, { format: "CODE128", width: 1.5, height: 25, displayValue: true, fontSize: 11, margin: 0 });
+            } else if (type === 'qrcode') {
+                const box = document.getElementById(`box-${id}`) || document.querySelector(`[id="box-${id}"]`);
+                if(box) {
+                    box.innerHTML = '';
+                    new QRCode(box, { text: val, width: 80, height: 80 });
+                }
+            } else {
+                let btype = type;
+                if(type === 'microqrcode' && val.length > 35) { btype = 'qrcode'; }
+                bwipjs.toCanvas(id, { bcid: btype, text: val, scale: 5, padding: 0 });
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function renderStickers(isFullPrint) {
+        const printArea = document.getElementById('print-area');
+        printArea.innerHTML = '';
+        const rows = document.querySelectorAll("#inputTable tbody tr");
+
+        rows.forEach(row => {
+            const qty = isFullPrint ? (parseInt(row.querySelector('.in-qty').value) || 0) : 1;
+            const mobilePreviewTarget = row.querySelector('.row-preview-target');
+            mobilePreviewTarget.innerHTML = ''; // Clear mobile preview
+
+            // Create 1 sticker for the row preview (always)
+            const previewData = createStickerElement(row, false);
+            mobilePreviewTarget.appendChild(previewData.element);
+            renderCode(previewData.id, previewData.val, previewData.type);
+
+            // Add stickers to main print area if conditions met
+            const name = row.querySelector('.in-name').value.trim();
+            const val = row.querySelector('.in-barcode').value.trim();
+            if (name || val) {
+                for (let i = 0; i < qty; i++) {
+                    const printData = createStickerElement(row, true);
+                    printArea.appendChild(printData.element);
+                    renderCode(printData.id, printData.val, printData.type);
+                }
+            }
+        });
+    }
+
+    function updatePreview() { renderStickers(false); }
+    function handlePrint() { renderStickers(true); setTimeout(() => { window.print(); renderStickers(false); }, 600); }
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+            e.preventDefault();
+            const inputs = Array.from(document.querySelectorAll('#inputTable input[type="text"], #inputTable input[type="number"]'));
+            const idx = inputs.indexOf(e.target);
+            if (idx < inputs.length - 1) {
+                inputs[idx + 1].focus();
+            } else {
+                addRow();
+                setTimeout(() => {
+                    const next = document.querySelectorAll('#inputTable input[type="text"]');
+                    next[next.length - 2].focus();
+                }, 50);
+            }
+        }
+    });
+
+    window.onload = updatePreview;
+</script>
+</body>
+</html>
