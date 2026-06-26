@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AL JARAD</title>
+    <title>AL JARAD - Management Portal</title>
     <link rel="shortcut icon" href="logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
@@ -52,121 +53,6 @@
             background: #ffffff; 
         }
 
-        .row-preview-container {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            margin-top: 10px;
-            border: 1px dashed #ccc;
-        }
-
-        @media (max-width: 992px) {
-            body { overflow-y: auto; height: auto; }
-            .main-wrapper { 
-                flex-direction: column; 
-                height: auto; 
-                display: block; 
-            }
-            .sticky-header {
-                position: sticky;
-                top: 0;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-            .editor-side, .preview-side { 
-                width: 100%; 
-                height: auto; 
-                overflow: visible; 
-                padding: 15px;
-            }
-            
-            .row-preview-container { 
-                display: flex; 
-                flex-direction: column; 
-            }
-            .row-preview-container label { 
-                font-size: 10px; 
-                font-weight: bold; 
-                color: #002d72;
-                margin-bottom: 5px; 
-                align-self: flex-start; 
-            }
-
-            .preview-side { 
-                display: none; 
-            }
-
-            .header-box {
-                padding: 8px !important;
-                margin-bottom: 10px !important; 
-            }
-
-            .header-box img { 
-                height: 25px !important; 
-            }
-
-            .header-box h4 {
-                font-size: 1.1rem !important; 
-            }
-
-            #inputTable thead {
-                display: none; 
-            }
-
-            #inputTable, #inputTable tbody, #inputTable tr, #inputTable td {
-                display: block; 
-                width: 100%; 
-            }
-
-            #inputTable tr { 
-                margin-bottom: 20px; 
-                border: 1px solid #002d72; 
-                border-radius: 10px; 
-                padding: 15px; 
-                background: #fff; 
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            }
-            #inputTable td { border: none; padding: 8px 0; position: relative; }
-            
-            #inputTable td:nth-of-type(1):before {
-                content: "ITEM DESCRIPTION"; 
-                font-weight: bold; 
-                font-size: 11px; 
-                color: #002d72; 
-                display: block; 
-                margin-bottom: 4px; 
-            }
-
-            #inputTable td:nth-of-type(2):before { 
-                content: "VALUE / CODE"; 
-                font-weight: bold; 
-                font-size: 11px; 
-                color: #002d72; 
-                display: block; 
-                margin-bottom: 4px; 
-            }
-
-            #inputTable td:nth-of-type(3):before { 
-                content: "STICKER SETTINGS"; 
-                font-weight: bold; 
-                font-size: 11px; 
-                color: #002d72; 
-                display: block; 
-                margin-bottom: 4px; 
-            }
-
-            #inputTable td:nth-of-type(4):before { 
-                content: "QUANTITY"; 
-                font-weight: bold; 
-                font-size: 11px; 
-                color: #002d72; 
-                display: block; 
-                margin-bottom: 4px; 
-            }
-        }
-
         .header-box { 
             background: #fff; 
             color: #002d72; 
@@ -177,11 +63,99 @@
             border: 1px solid #eee;
         }
 
-        #print-area { 
+        #print-area, #mrp-print-area { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             gap: 15px; 
+        }
+
+        th { 
+            background: #002d72 !important; 
+            color: white !important; 
+            padding: 12px; 
+            font-size: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+        }
+
+        .footer-banner { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: #000080; 
+            color: white; 
+            text-align: center; 
+            padding: 5px; 
+            font-size: 14px; 
+            z-index: 1000; 
+        }
+
+        .portal-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f0f4f8;
+            padding: 20px;
+        }
+        .portal-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        .portal-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 30px 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid #dee2e6;
+            height: 100%;
+        }
+        .btn-qr {
+            color: #002d72;
+            background: #f4f8ff;
+        }
+        .btn-qr:hover {
+            background: #002d72;
+            color: white;
+            border-color: #002d72;
+            transform: translateY(-3px);
+        }
+        .btn-mrp {
+            color: #198754;
+            background: #f4fff7;
+        }
+        .btn-mrp:hover {
+            background: #198754;
+            color: white;
+            border-color: #198754;
+            transform: translateY(-3px);
+        }
+
+        .row-preview-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px dashed #ccc;
         }
 
         .sticker { 
@@ -282,32 +256,174 @@
             max-height: 75px !important; 
         }
 
-        th { 
-            background: #002d72 !important; 
-            color: white !important; 
-            padding: 12px; 
-            font-size: 12px; 
-            text-align: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 10; 
+        .mrp-sticker { 
+            width: 50mm; 
+            height: 25mm; 
+            border: 1px solid #ccc; 
+            padding: 4px 6px; 
+            box-sizing: border-box; 
+            background: #fff;
+            display: flex; 
+            flex-direction: row;
+            justify-content: space-between; 
+            align-items: center; 
+            overflow: hidden;
         }
 
-        .footer-banner { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
+        .mrp-sticker-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 72%;
+            height: 100%;
+            gap: 1px;
+        }
+
+        .mrp-item-name-display { 
+            text-transform: uppercase; 
+            line-height: 1.1; 
+            text-align: center;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .mrp-barcode-svg { 
             width: 100%; 
-            background-color: #000080; 
-            color: white; 
-            text-align: center; 
-            padding: 5px; 
-            font-size: 14px; 
-            z-index: 1000; 
+            height: 30px !important; 
+        }
+
+        .mrp-price-display {
+            text-align: center;
+            width: 100%;
+        }
+
+        .mrp-sticker-dates-side {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            width: 28%;
+            height: 100%;
+            padding-left: 2px;
+        }
+
+        .mrp-date-rotated-box {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            white-space: nowrap;
+            line-height: 1.2;
+            text-align: left;
+        }
+
+        @media (max-width: 992px) {
+            #qr-screen body { overflow-y: auto; height: auto; }
+            #qr-screen .main-wrapper { 
+                flex-direction: column; 
+                height: auto; 
+                display: block; 
+            }
+            #qr-screen .sticky-header {
+                position: sticky;
+                top: 0;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            #qr-screen .editor-side, #qr-screen .preview-side { 
+                width: 100%; 
+                height: auto; 
+                overflow: visible; 
+                padding: 15px;
+            }
+            
+            #qr-screen .row-preview-container { 
+                display: flex; 
+                flex-direction: column; 
+            }
+            #qr-screen .row-preview-container label { 
+                font-size: 10px; 
+                font-weight: bold; 
+                color: #002d72;
+                margin-bottom: 5px; 
+                align-self: flex-start; 
+            }
+
+            #qr-screen .preview-side { 
+                display: none; 
+            }
+
+            #qr-screen .header-box {
+                padding: 8px !important;
+                margin-bottom: 10px !important; 
+            }
+
+            #qr-screen .header-box img { 
+                height: 25px !important; 
+            }
+
+            #qr-screen .header-box h4 {
+                font-size: 1.1rem !important; 
+            }
+
+            #inputTable thead {
+                display: none; 
+            }
+
+            #inputTable, #inputTable tbody, #inputTable tr, #inputTable td {
+                display: block; 
+                width: 100%; 
+            }
+
+            #inputTable tr { 
+                margin-bottom: 20px; 
+                border: 1px solid #002d72; 
+                border-radius: 10px; 
+                padding: 15px; 
+                background: #fff; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            #inputTable td { border: none; padding: 8px 0; position: relative; }
+            
+            #inputTable td:nth-of-type(1):before {
+                content: "ITEM DESCRIPTION"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+
+            #inputTable td:nth-of-type(2):before { 
+                content: "VALUE / CODE"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+
+            #inputTable td:nth-of-type(3):before { 
+                content: "STICKER SETTINGS"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
+
+            #inputTable td:nth-of-type(4):before { 
+                content: "QUANTITY"; 
+                font-weight: bold; 
+                font-size: 11px; 
+                color: #002d72; 
+                display: block; 
+                margin-bottom: 4px; 
+            }
         }
 
         @media print {
-            .sticky-header, .no-print, .footer-banner, .row-preview-container { 
+            .sticky-header, .no-print, .footer-banner, .row-preview-container, .portal-container { 
                 display: none !important; 
             }
 
@@ -327,117 +443,270 @@
                 display: block !important; 
             }
 
-            .sticker { 
+            .sticker, .mrp-sticker { 
                 border: none; 
                 margin: 0 auto; 
                 page-break-after: always; 
             }
-
         }
-        
     </style>
 </head>
 <body>
 
-<div class="sticky-header no-print">
-    <div class="header-box shadow-sm mb-3">
-        <div class="d-flex align-items-center justify-content-center gap-3">
-            <img src="logo.png" alt="Logo" style="height: 40px;" onerror="this.style.display='none'">
-            <h4 class="m-0 fw-bold">AL JARAD</h4>
+<div id="portal-screen" class="portal-container">
+    <div class="portal-card">
+        <div class="mb-4">
+            <img src="logo.png" alt="Logo" style="height: 60px;" onerror="this.style.display='none'">
+            <h2 class="mt-2 fw-bold" style="color: #002d72;">AL JARAD LABEL MANAGEMENT SYSTEMS</h2>
+            <p class="text-muted">Select a processing application tool below to begin layout assembly</p>
         </div>
-    </div>
-
-    <div class="row g-3">
-        <div class="col-12 col-md-9">
-            <button onclick="addRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
-        </div>
-        <div class="col-12 col-md-3">
-            <button onclick="handlePrint()" class="btn btn-outline-success w-100 fw-bold py-2 shadow">PRINT</button>
+        <div class="row g-4">
+            <div class="col-12 col-sm-6">
+                <a href="#" onclick="switchView('qr-screen')" class="portal-btn btn-qr">
+                    <svg width="40" height="40" fill="currentColor" viewBox="0 0 16 16"><path d="M2 2h2v2H2V2Z"/><path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/><path d="M6 10v6H0v-6h6ZM5 11H1v4h4v-4Zm10-9h-2v2h2V2Z"/><path d="M16 0v6h-6V0h6Zm-1 1h-4h4V1Zm-4 10h2v2h-2v-2Z"/><path d="M14 14h2v2h-2v-2Zm2-2h-2v2h2v-2Zm-4-2h2v2h-2v-2Zm2 0h2v2h-2v-2Zm-4 2h2v2h-2v-2Zm2 4h-2v-2h2v2Zm-4-4h2v2h-2v-2Zm2 2h2v2h-2v-2Z"/><path d="M14 11h2v1h-2v-1Zm-3 2h1v1h-1v-1Zm0-4h1v1h-1V9Zm2 2h1v1h-1v-1Z"/></svg>
+                    QR LABEL GENERATOR
+                </a>
+            </div>
+            <div class="col-12 col-sm-6">
+                <a href="#" onclick="switchView('mrp-screen')" class="portal-btn btn-mrp">
+                    <svg width="40" height="40" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.178.572-.457.688l-1.5 1-.643-.965.643-.965V2.5a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0-.5.5v11H13v1H1.5A1.5 1.5 0 0 1 0 13.5v-11Z"/><path d="M12 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1Z"/></svg>
+                    MRP LABEL GENERATOR
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="main-wrapper">
-    <div class="editor-side no-print">
-        <div class="table-container">
-            <table class="table table-bordered align-middle" id="inputTable">
-                <thead>
-                    <tr>
-                        <th style="min-width: 250px;">ITEM DESCRIPTION</th>
-                        <th style="min-width: 150px;">VALUE / CODE</th>
-                        <th style="min-width: 220px;">SETTINGS</th>
-                        <th style="width: 100px;">QTY</th>
-                        <th style="width: 50px;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control in-name mb-2" oninput="updatePreview()" placeholder="Text">
-                            <div class="d-flex gap-2 align-items-center">
-                                <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updatePreview()" title="Font Size" style="width: 60px;">
-                                <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updatePreview()" title="Text Color" style="width: 40px; padding: 2px;">
-                                <div class="form-check pt-1">
-                                    <input class="form-check-input check-bold" type="checkbox" checked onchange="updatePreview()">
-                                    <label class="form-check-label small">Bold</label>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control in-barcode mb-2" oninput="updatePreview()" placeholder="Code Value">
-                            <select class="form-select form-select-sm type-select" onchange="updatePreview()">
-                                    <option value="barcode">Barcode</option>
-                                    <option value="qrcode">QR Code</option>
-                                    <option value="microqrcode">Micro QR</option>
-                                    <option value="azteccode">Aztec Code</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div class="d-flex flex-column gap-2">
-                                <div class="d-flex gap-3 mb-1">
-                                    <div class="form-check">
-                                        <input class="form-check-input check-logo" type="checkbox" checked onchange="updatePreview()">
-                                        <label class="form-check-label small">Logo</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input check-brand" type="checkbox" checked onchange="updatePreview()">
-                                        <label class="form-check-label small">Brand</label>
-                                    </div>
-                                </div>
-                                <div class="brand-config border-top pt-2">
-                                    <label class="small fw-bold d-block mb-1">Brand Style:</label>
-                                    <div class="d-flex gap-1 align-items-center mb-1">
-                                        <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updatePreview()" title="Brand Size" style="width:50px">
-                                        <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updatePreview()" title="Brand Color" style="width:40px; padding:2px;">
-                                        <div class="form-check ms-1">
-                                            <input class="form-check-input brand-bold" type="checkbox" checked onchange="updatePreview()">
-                                            <label class="form-check-label small">B</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row-preview-container">
-                                    <label>LIVE STICKER PREVIEW</label>
-                                    <div class="row-preview-target"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
-                        <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>
-                    </tr>
-                </tbody>
-            </table>
+
+<div id="qr-screen" style="display: none; height: 100vh; flex-direction: column;">
+    <div class="sticky-header no-print">
+        <div class="header-box shadow-sm mb-3 position-relative">
+            <button onclick="switchView('portal-screen')" class="btn btn-sm btn-outline-secondary position-absolute start-0 top-50 translate-middle-y ms-3 fw-bold">← Back to Home</button>
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <img src="logo.png" alt="Logo" style="height: 40px;" onerror="this.style.display='none'">
+                <h4 class="m-0 fw-bold">AL JARAD (QR & BARCODE)</h4>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-md-9">
+                <button onclick="addRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
+            </div>
+            <div class="col-12 col-md-3">
+                <button onclick="handlePrint()" class="btn btn-outline-success w-100 fw-bold py-2 shadow">PRINT</button>
+            </div>
         </div>
     </div>
 
-    <div class="preview-side border-start shadow-sm">
-        <h6 class="text-center text-muted mb-3 no-print">LIVE PREVIEW</h6>
-        <div id="print-area"></div>
+    <div class="main-wrapper">
+        <div class="editor-side no-print">
+            <div class="table-container">
+                <table class="table table-bordered align-middle" id="inputTable">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 250px;">ITEM DESCRIPTION</th>
+                            <th style="min-width: 150px;">VALUE / CODE</th>
+                            <th style="min-width: 220px;">SETTINGS</th>
+                            <th style="width: 100px;">QTY</th>
+                            <th style="width: 50px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control in-name mb-2" oninput="updatePreview()" placeholder="Text">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updatePreview()" title="Font Size" style="width: 60px;">
+                                    <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updatePreview()" title="Text Color" style="width: 40px; padding: 2px;">
+                                    <div class="form-check pt-1">
+                                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updatePreview()">
+                                        <label class="form-check-label small">Bold</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control in-barcode mb-2" oninput="updatePreview()" placeholder="Code Value">
+                                <select class="form-select form-select-sm type-select" onchange="updatePreview()">
+                                        <option value="barcode">Barcode</option>
+                                        <option value="qrcode">QR Code</option>
+                                        <option value="microqrcode">Micro QR</option>
+                                        <option value="azteccode">Aztec Code</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex gap-3 mb-1">
+                                        <div class="form-check">
+                                            <input class="form-check-input check-logo" type="checkbox" checked onchange="updatePreview()">
+                                            <label class="form-check-label small">Logo</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input check-brand" type="checkbox" checked onchange="updatePreview()">
+                                            <label class="form-check-label small">Brand</label>
+                                        </div>
+                                    </div>
+                                    <div class="brand-config border-top pt-2">
+                                        <label class="small fw-bold d-block mb-1">Brand Style:</label>
+                                        <div class="d-flex gap-1 align-items-center mb-1">
+                                            <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updatePreview()" title="Brand Size" style="width:50px">
+                                            <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updatePreview()" title="Brand Color" style="width:40px; padding:2px;">
+                                            <div class="form-check ms-1">
+                                                <input class="form-check-input brand-bold" type="checkbox" checked onchange="updatePreview()">
+                                                <label class="form-check-label small">B</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row-preview-container">
+                                        <label>LIVE STICKER PREVIEW</label>
+                                        <div class="row-preview-target"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
+                            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="preview-side border-start shadow-sm">
+            <h6 class="text-center text-muted mb-3 no-print">LIVE PREVIEW</h6>
+            <div id="print-area"></div>
+        </div>
+
+        <div class="footer-banner no-print">Developed By Muhsin</div>
+    </div>
+</div>
+
+
+<div id="mrp-screen" style="display: none; height: 100vh; flex-direction: column;">
+    <div class="sticky-header no-print">
+        <div class="header-box shadow-sm mb-3 position-relative">
+            <button onclick="switchView('portal-screen')" class="btn btn-sm btn-outline-secondary position-absolute start-0 top-50 translate-middle-y ms-3 fw-bold">← Back to Home</button>
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <img src="logo.png" alt="Logo" style="height: 40px;" onerror="this.style.display='none'">
+                <h4 class="m-0 fw-bold">AL JARAD (MRP STICKERS)</h4>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-md-9">
+                <button onclick="addMrpRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
+            </div>
+            <div class="col-12 col-md-3">
+                <button onclick="handleMrpPrint()" class="btn btn-outline-success w-100 fw-bold py-2 shadow">PRINT</button>
+            </div>
+        </div>
     </div>
 
-    <div class="footer-banner no-print">Developed By Muhsin</div>
+    <div class="main-wrapper">
+        <div class="editor-side no-print">
+            <div class="table-container">
+                <table class="table table-bordered align-middle" id="mrpInputTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">ITEM DETAILS</th>
+                            <th style="width: 22%;">BARCODE / VALUE</th>
+                            <th style="width: 16%;">PRICE</th>
+                            <th style="width: 27%;">DATES (PKD & EXP)</th>
+                            <th style="width: 8%;">QTY</th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control in-name mb-2" oninput="updateMrpPreview()" placeholder="Item Name">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updateMrpPreview()" title="Font Size" style="width: 60px;">
+                                    <div class="form-check pt-1">
+                                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updateMrpPreview()">
+                                        <label class="form-check-label small">Bold</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control in-barcode mb-2" oninput="updateMrpPreview()" placeholder="Code Value">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="number" class="form-control form-control-sm code-font-size" value="9" min="6" max="20" oninput="updateMrpPreview()" title="Barcode Text Size" style="width: 55px;">
+                                    <div class="form-check pt-1 me-2">
+                                        <input class="form-check-input check-code-bold" type="checkbox" onchange="updateMrpPreview()">
+                                        <label class="form-check-label small">Bold</label>
+                                    </div>
+                                    <div class="form-check pt-1">
+                                        <input class="form-check-input check-show-text" type="checkbox" checked onchange="updateMrpPreview()">
+                                        <label class="form-check-label small">Show Text</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control in-price mb-2" oninput="updateMrpPreview()" placeholder="e.g. 10">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="number" class="form-control form-control-sm price-font-size" value="10" min="6" max="20" oninput="updateMrpPreview()" title="Price Size" style="width: 60px;">
+                                    <div class="form-check pt-1">
+                                        <input class="form-check-input check-price-bold" type="checkbox" checked onchange="updateMrpPreview()">
+                                        <label class="form-check-label small">Bold</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row g-1 mb-2">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm in-pkd" oninput="updateMrpPreview()" placeholder="PACKED DATE">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control form-control-sm in-exp" oninput="updateMrpPreview()" placeholder="EXPIRE DATE">
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2 align-items-center border-top pt-1 justify-content-between flex-wrap">
+                                    <div class="d-flex align-items-center gap-1 mb-1">
+                                        <span class="small text-muted" style="font-size:10px">Size:</span>
+                                        <input type="number" class="form-control form-control-sm date-font-size" value="7" min="5" max="15" oninput="updateMrpPreview()" style="width: 48px;">
+                                    </div>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input check-date-lbl-bold" type="checkbox" checked onchange="updateMrpPreview()">
+                                        <label class="form-check-label small" style="font-size:11px">Bold Headings</label>
+                                    </div>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input check-date-val-bold" type="checkbox" onchange="updateMrpPreview()">
+                                        <label class="form-check-label small" style="font-size:11px">Bold Data</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updateMrpPreview()"></td>
+                            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-2 fw-bold" onclick="deleteMrpRow(this)">X</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="preview-side border-start shadow-sm">
+            <h6 class="text-center text-muted mb-3 no-print">LIVE PREVIEW</h6>
+            <div id="mrp-print-area"></div>
+        </div>
+
+        <div class="footer-banner no-print">Developed By Muhsin</div>
+    </div>
 </div>
 
 <script>
+    function switchView(screenId) {
+        document.getElementById('portal-screen').style.display = 'none';
+        document.getElementById('qr-screen').style.display = 'none';
+        document.getElementById('mrp-screen').style.display = 'none';
+        
+        if(screenId === 'portal-screen') {
+            document.getElementById('portal-screen').style.display = 'flex';
+        } else {
+            document.getElementById(screenId).style.display = 'flex';
+        }
+        
+        if(screenId === 'qr-screen') { updatePreview(); }
+        if(screenId === 'mrp-screen') { updateMrpPreview(); }
+    }
+
     function addRow() {
         const tbody = document.querySelector("#inputTable tbody");
         const row = tbody.insertRow();
@@ -494,7 +763,7 @@
             <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
             <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>`;
             
-        const editor = document.querySelector('.editor-side');
+        const editor = document.querySelector('#qr-screen .editor-side');
         editor.scrollTop = editor.scrollHeight;
         updatePreview();
     }
@@ -590,14 +859,12 @@
         rows.forEach(row => {
             const qty = isFullPrint ? (parseInt(row.querySelector('.in-qty').value) || 0) : 1;
             const mobilePreviewTarget = row.querySelector('.row-preview-target');
-            mobilePreviewTarget.innerHTML = ''; // Clear mobile preview
+            if (mobilePreviewTarget) mobilePreviewTarget.innerHTML = ''; 
 
-            // Create 1 sticker for the row preview (always)
             const previewData = createStickerElement(row, false);
-            mobilePreviewTarget.appendChild(previewData.element);
+            if (mobilePreviewTarget) mobilePreviewTarget.appendChild(previewData.element);
             renderCode(previewData.id, previewData.val, previewData.type);
 
-            // Add stickers to main print area if conditions met
             const name = row.querySelector('.in-name').value.trim();
             const val = row.querySelector('.in-barcode').value.trim();
             if (name || val) {
@@ -612,25 +879,237 @@
 
     function updatePreview() { renderStickers(false); }
     function handlePrint() { renderStickers(true); setTimeout(() => { window.print(); renderStickers(false); }, 600); }
-    
+
+    function addMrpRow() {
+        const tbody = document.querySelector("#mrpInputTable tbody");
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>
+                <input type="text" class="form-control in-name mb-2" oninput="updateMrpPreview()" placeholder="Item Name">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updateMrpPreview()" style="width: 60px;">
+                    <div class="form-check pt-1">
+                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updateMrpPreview()">
+                        <label class="form-check-label small">Bold</label>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="form-control in-barcode mb-2" oninput="updateMrpPreview()" placeholder="Code Value">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control form-control-sm code-font-size" value="9" min="6" max="20" oninput="updateMrpPreview()" style="width: 55px;">
+                    <div class="form-check pt-1 me-2">
+                        <input class="form-check-input check-code-bold" type="checkbox" onchange="updateMrpPreview()">
+                        <label class="form-check-label small">Bold</label>
+                    </div>
+                    <div class="form-check pt-1">
+                        <input class="form-check-input check-show-text" type="checkbox" checked onchange="updateMrpPreview()">
+                        <label class="form-check-label small">Show Text</label>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <input type="text" class="form-control in-price mb-2" oninput="updateMrpPreview()" placeholder="e.g. 10">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control form-control-sm price-font-size" value="10" min="6" max="20" oninput="updateMrpPreview()" style="width: 60px;">
+                    <div class="form-check pt-1">
+                        <input class="form-check-input check-price-bold" type="checkbox" checked onchange="updateMrpPreview()">
+                        <label class="form-check-label small">Bold</label>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="row g-1 mb-2">
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-sm in-pkd" oninput="updateMrpPreview()" placeholder="PACKED DATE">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-sm in-exp" oninput="updateMrpPreview()" placeholder="EXPIRE DATE">
+                    </div>
+                </div>
+                <div class="d-flex gap-2 align-items-center border-top pt-1 justify-content-between flex-wrap">
+                    <div class="d-flex align-items-center gap-1 mb-1">
+                        <span class="small text-muted" style="font-size:10px">Size:</span>
+                        <input type="number" class="form-control form-control-sm date-font-size" value="7" min="5" max="15" oninput="updateMrpPreview()" style="width: 48px;">
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input check-date-lbl-bold" type="checkbox" checked onchange="updateMrpPreview()">
+                        <label class="form-check-label small" style="font-size:11px">Bold Headings</label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input check-date-val-bold" type="checkbox" onchange="updateMrpPreview()">
+                        <label class="form-check-label small" style="font-size:11px">Bold Data</label>
+                    </div>
+                </div>
+            </td>
+            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updateMrpPreview()"></td>
+            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-2 fw-bold" onclick="deleteMrpRow(this)">X</button></td>`;
+            
+        const editor = document.querySelector('#mrp-screen .editor-side');
+        editor.scrollTop = editor.scrollHeight;
+        updateMrpPreview();
+    }
+
+    function deleteMrpRow(btn) {
+        if (document.querySelectorAll("#mrpInputTable tbody tr").length > 1) {
+            btn.closest('tr').remove();
+            updateMrpPreview();
+        }
+    }
+
+    function formatPrice(val) {
+        if (!val) return '';
+        const cleanVal = val.trim();
+        if (!isNaN(cleanVal) && cleanVal !== '') {
+            return 'SR ' + parseFloat(cleanVal).toFixed(2);
+        }
+        return cleanVal;
+    }
+
+    function createMrpStickerElement(row) {
+        const name = row.querySelector('.in-name').value.trim();
+        const val = row.querySelector('.in-barcode').value.trim();
+        const priceRaw = row.querySelector('.in-price').value.trim();
+        const pkd = row.querySelector('.in-pkd').value.trim();
+        const exp = row.querySelector('.in-exp').value.trim();
+        
+        const isBold = row.querySelector('.check-bold').checked;
+        const fontSize = row.querySelector('.in-font-size').value + 'pt';
+        
+        const priceFontSize = row.querySelector('.price-font-size').value + 'pt';
+        const isPriceBold = row.querySelector('.check-price-bold').checked;
+
+        const dateFontSize = row.querySelector('.date-font-size').value + 'pt';
+        const isDateLblBold = row.querySelector('.check-date-lbl-bold').checked ? 'bold' : 'normal';
+        const isDateValBold = row.querySelector('.check-date-val-bold').checked ? 'bold' : 'normal';
+
+        const sticker = document.createElement('div');
+        sticker.className = 'mrp-sticker';
+        
+        const id = "mrp-" + Math.random().toString(36).substr(2, 7);
+        const nameStyle = `font-size: ${fontSize}; font-weight: ${isBold ? 'bold' : 'normal'}; color: #000000;`;
+        const priceStyle = `font-size: ${priceFontSize}; font-weight: ${isPriceBold ? 'bold' : 'normal'}; color: #000000;`;
+
+        let mainContentHtml = `<div class="mrp-sticker-main-content">`;
+        if (name) {
+            mainContentHtml += `<div class="mrp-item-name-display" style="${nameStyle}">${name}</div>`;
+        }
+        if (val) {
+            mainContentHtml += `<svg class="mrp-barcode-svg" id="${id}"></svg>`;
+        }
+        if (priceRaw) {
+            mainContentHtml += `<div class="mrp-price-display" style="${priceStyle}">${formatPrice(priceRaw)}</div>`;
+        }
+        mainContentHtml += `</div>`;
+
+        let datesSideHtml = '';
+        if (pkd || exp) {
+            datesSideHtml += `<div class="mrp-sticker-dates-side" style="font-size: ${dateFontSize}; color: #000000;">`;
+            if (pkd) {
+                datesSideHtml += `<div class="mrp-date-rotated-box"><span style="font-weight: ${isDateLblBold}">PKD :</span> <span style="font-weight: ${isDateValBold}">${pkd}</span></div>`;
+            }
+            if (exp) {
+                datesSideHtml += `<div class="mrp-date-rotated-box"><span style="font-weight: ${isDateLblBold}">EXP :</span> <span style="font-weight: ${isDateValBold}">${exp}</span></div>`;
+            }
+            datesSideHtml += `</div>`;
+        }
+
+        sticker.innerHTML = mainContentHtml + datesSideHtml;
+
+        const showText = row.querySelector('.check-show-text').checked;
+        const codeFontSize = parseInt(row.querySelector('.code-font-size').value) || 9;
+        const isCodeBold = row.querySelector('.check-code-bold').checked;
+
+        return { 
+            element: sticker, 
+            id: id, 
+            val: val, 
+            showText: showText, 
+            codeFontSize: codeFontSize, 
+            isCodeBold: isCodeBold 
+        };
+    }
+
+    function renderMrpCode(config) {
+        if (!config.val) return; 
+        try {
+            JsBarcode(`#${config.id}`, config.val, { 
+                format: "CODE128", 
+                width: 1.3, 
+                height: 18, 
+                displayValue: config.showText, 
+                fontSize: config.codeFontSize,
+                fontOptions: config.isCodeBold ? "bold" : "",
+                margin: 0 
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function renderMrpStickers(isFullPrint) {
+        const printArea = document.getElementById('mrp-print-area');
+        printArea.innerHTML = '';
+        const rows = document.querySelectorAll("#mrpInputTable tbody tr");
+
+        rows.forEach(row => {
+            const name = row.querySelector('.in-name').value.trim();
+            const val = row.querySelector('.in-barcode').value.trim();
+            const price = row.querySelector('.in-price').value.trim();
+            const pkd = row.querySelector('.in-pkd').value.trim();
+            const exp = row.querySelector('.in-exp').value.trim();
+
+            if (!name && !val && !price && !pkd && !exp) {
+                return; 
+            }
+
+            const qty = isFullPrint ? (parseInt(row.querySelector('.in-qty').value) || 0) : 1;
+
+            for (let i = 0; i < qty; i++) {
+                const config = createMrpStickerElement(row);
+                printArea.appendChild(config.element);
+                renderMrpCode(config);
+            }
+        });
+    }
+
+    function updateMrpPreview() { renderMrpStickers(false); }
+    function handleMrpPrint() { renderMrpStickers(true); setTimeout(() => { window.print(); renderMrpStickers(false); }, 600); }
+
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
             e.preventDefault();
-            const inputs = Array.from(document.querySelectorAll('#inputTable input[type="text"], #inputTable input[type="number"]'));
+            
+            const isQrActive = document.getElementById('qr-screen').style.display === 'flex';
+            const tableId = isQrActive ? '#inputTable' : '#mrpInputTable';
+            
+            const inputs = Array.from(document.querySelectorAll(`${tableId} input[type="text"], ${tableId} input[type="number"]`));
             const idx = inputs.indexOf(e.target);
+            
             if (idx < inputs.length - 1) {
                 inputs[idx + 1].focus();
             } else {
-                addRow();
-                setTimeout(() => {
-                    const next = document.querySelectorAll('#inputTable input[type="text"]');
-                    next[next.length - 2].focus();
-                }, 50);
+                if (isQrActive) {
+                    addRow();
+                    setTimeout(() => {
+                        const next = document.querySelectorAll('#inputTable input[type="text"]');
+                        next[next.length - 2].focus();
+                    }, 50);
+                } else {
+                    addMrpRow();
+                    setTimeout(() => {
+                        const next = document.querySelectorAll('#mrpInputTable input[type="text"]');
+                        next[next.length - 4].focus(); 
+                    }, 50);
+                }
             }
         }
     });
 
-    window.onload = updatePreview;
+    window.onload = function() {
+        switchView('portal-screen');
+    };
 </script>
 </body>
-</html>
+</html
