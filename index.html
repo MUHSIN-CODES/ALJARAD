@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AL JARAD - Management Portal</title>
+    <title>AL JARAD - Management Tool Suite</title>
     <link rel="shortcut icon" href="logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
     
     <style>
+        /* Shared Framework Styles */
         body { 
             background: #f8f9fa; 
             font-family: 'Arial', sans-serif; 
@@ -63,11 +63,14 @@
             border: 1px solid #eee;
         }
 
-        #print-area, #mrp-print-area { 
+        /* Fixed Preview Containers - Top Centered Layout */
+        #print-area, #qr-print-area, #mrp-print-area { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
+            justify-content: flex-start;
             gap: 15px; 
+            width: 100%;
         }
 
         th { 
@@ -94,22 +97,28 @@
             z-index: 1000; 
         }
 
+        /* Portal Screen Styling */
         .portal-container {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: #f0f4f8;
+            background: #f0f2f5;
             padding: 20px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2000;
         }
         .portal-card {
             background: white;
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            max-width: 800px;
-            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
+            max-width: 700px;
+            width: 100%;
         }
         .portal-btn {
             display: flex;
@@ -118,35 +127,90 @@
             justify-content: center;
             gap: 15px;
             padding: 30px 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
             border-radius: 12px;
             text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            border: 2px solid #dee2e6;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
             height: 100%;
+            border: 2px solid #dee2e6;
         }
-        .btn-qr {
-            color: #002d72;
-            background: #f4f8ff;
-        }
-        .btn-qr:hover {
-            background: #002d72;
-            color: white;
-            border-color: #002d72;
-            transform: translateY(-3px);
-        }
-        .btn-mrp {
-            color: #198754;
-            background: #f4fff7;
-        }
-        .btn-mrp:hover {
-            background: #198754;
-            color: white;
-            border-color: #198754;
-            transform: translateY(-3px);
+        .btn-qr { color: #002d72; background: #f4f7fc; }
+        .btn-qr:hover { background: #002d72; color: white; transform: translateY(-3px); }
+        .btn-mrp { color: #2e7d32; background: #f1f8e9; }
+        .btn-mrp:hover { background: #2e7d32; color: white; transform: translateY(-3px); }
+
+        /* Functional Section Swapping Viewports */
+        .app-view { display: none; width: 100%; height: 100vh; flex-direction: column; }
+
+        /* ==========================================================================
+           MRP LAYOUT SPECIFIC GENERATOR STYLES (INDEX.HTML ORIGINAL)
+           ========================================================================== */
+        .sticker-mrp { 
+            width: 50mm; 
+            height: 25mm; 
+            border: 1px solid #ccc; 
+            padding: 4px 6px; 
+            box-sizing: border-box; 
+            background: #fff;
+            display: flex; 
+            flex-direction: row;
+            justify-content: space-between; 
+            align-items: center; 
+            overflow: hidden;
         }
 
+        .sticker-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 72%;
+            height: 100%;
+            gap: 1px;
+        }
+
+        .item-name-display-mrp { 
+            text-transform: uppercase; 
+            line-height: 1.1; 
+            text-align: center;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .barcode-svg-mrp { 
+            width: 100%; 
+            height: 30px !important; 
+        }
+
+        .price-display {
+            text-align: center;
+            width: 100%;
+        }
+
+        .sticker-dates-side {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center; 
+            gap: 8px;
+            width: 28%;
+            height: 100%;
+            padding-left: 2px;
+        }
+
+        .date-rotated-box {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            white-space: nowrap;
+            line-height: 1.2;
+            text-align: left;
+        }
+
+        /* ==========================================================================
+           QR/BARCODE SPECIFIC GENERATOR STYLES (COPY.HTML ORIGINAL)
+           ========================================================================== */
         .row-preview-container {
             display: none;
             justify-content: center;
@@ -158,7 +222,7 @@
             border: 1px dashed #ccc;
         }
 
-        .sticker { 
+        .sticker-qr { 
             width: 50mm; 
             height: 25mm; 
             border: 1px solid #ccc; 
@@ -188,11 +252,11 @@
             height: 100%; 
         }
 
-        .item-name-display { 
+        .item-name-display-qr { 
             text-transform: uppercase; 
             line-height: 1.1; 
         }
-        .barcode-svg { 
+        .barcode-svg-qr { 
             width: 100%; 
             height: 45px !important; 
         }
@@ -256,92 +320,31 @@
             max-height: 75px !important; 
         }
 
-        .mrp-sticker { 
-            width: 50mm; 
-            height: 25mm; 
-            border: 1px solid #ccc; 
-            padding: 4px 6px; 
-            box-sizing: border-box; 
-            background: #fff;
-            display: flex; 
-            flex-direction: row;
-            justify-content: space-between; 
-            align-items: center; 
-            overflow: hidden;
-        }
-
-        .mrp-sticker-main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            width: 72%;
-            height: 100%;
-            gap: 1px;
-        }
-
-        .mrp-item-name-display { 
-            text-transform: uppercase; 
-            line-height: 1.1; 
-            text-align: center;
-            width: 100%;
-            word-wrap: break-word;
-        }
-
-        .mrp-barcode-svg { 
-            width: 100%; 
-            height: 30px !important; 
-        }
-
-        .mrp-price-display {
-            text-align: center;
-            width: 100%;
-        }
-
-        .mrp-sticker-dates-side {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            width: 28%;
-            height: 100%;
-            padding-left: 2px;
-        }
-
-        .mrp-date-rotated-box {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            white-space: nowrap;
-            line-height: 1.2;
-            text-align: left;
-        }
-
+        /* Mobile View Rules for Copy.html Features */
         @media (max-width: 992px) {
-            #qr-screen body { overflow-y: auto; height: auto; }
-            #qr-screen .main-wrapper { 
+            .app-view-active-qr body { overflow-y: auto; height: auto; }
+            .app-view-active-qr .main-wrapper { 
                 flex-direction: column; 
                 height: auto; 
                 display: block; 
             }
-            #qr-screen .sticky-header {
+            .app-view-active-qr .sticky-header {
                 position: sticky;
                 top: 0;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             }
-            #qr-screen .editor-side, #qr-screen .preview-side { 
+            .app-view-active-qr .editor-side, .app-view-active-qr .preview-side { 
                 width: 100%; 
                 height: auto; 
                 overflow: visible; 
                 padding: 15px;
             }
             
-            #qr-screen .row-preview-container { 
+            .app-view-active-qr .row-preview-container { 
                 display: flex; 
                 flex-direction: column; 
             }
-            #qr-screen .row-preview-container label { 
+            .app-view-active-qr .row-preview-container label { 
                 font-size: 10px; 
                 font-weight: bold; 
                 color: #002d72;
@@ -349,33 +352,33 @@
                 align-self: flex-start; 
             }
 
-            #qr-screen .preview-side { 
+            .app-view-active-qr .preview-side { 
                 display: none; 
             }
 
-            #qr-screen .header-box {
+            .app-view-active-qr .header-box {
                 padding: 8px !important;
                 margin-bottom: 10px !important; 
             }
 
-            #qr-screen .header-box img { 
+            .app-view-active-qr .header-box img { 
                 height: 25px !important; 
             }
 
-            #qr-screen .header-box h4 {
+            .app-view-active-qr .header-box h4 {
                 font-size: 1.1rem !important; 
             }
 
-            #inputTable thead {
+            .app-view-active-qr #qrTable thead {
                 display: none; 
             }
 
-            #inputTable, #inputTable tbody, #inputTable tr, #inputTable td {
+            .app-view-active-qr #qrTable, .app-view-active-qr #qrTable tbody, .app-view-active-qr #qrTable tr, .app-view-active-qr #qrTable td {
                 display: block; 
                 width: 100%; 
             }
 
-            #inputTable tr { 
+            .app-view-active-qr #qrTable tr { 
                 margin-bottom: 20px; 
                 border: 1px solid #002d72; 
                 border-radius: 10px; 
@@ -383,9 +386,9 @@
                 background: #fff; 
                 box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             }
-            #inputTable td { border: none; padding: 8px 0; position: relative; }
+            .app-view-active-qr #qrTable td { border: none; padding: 8px 0; position: relative; }
             
-            #inputTable td:nth-of-type(1):before {
+            .app-view-active-qr #qrTable td:nth-of-type(1):before {
                 content: "ITEM DESCRIPTION"; 
                 font-weight: bold; 
                 font-size: 11px; 
@@ -394,7 +397,7 @@
                 margin-bottom: 4px; 
             }
 
-            #inputTable td:nth-of-type(2):before { 
+            .app-view-active-qr #qrTable td:nth-of-type(2):before { 
                 content: "VALUE / CODE"; 
                 font-weight: bold; 
                 font-size: 11px; 
@@ -403,7 +406,7 @@
                 margin-bottom: 4px; 
             }
 
-            #inputTable td:nth-of-type(3):before { 
+            .app-view-active-qr #qrTable td:nth-of-type(3):before { 
                 content: "STICKER SETTINGS"; 
                 font-weight: bold; 
                 font-size: 11px; 
@@ -412,7 +415,7 @@
                 margin-bottom: 4px; 
             }
 
-            #inputTable td:nth-of-type(4):before { 
+            .app-view-active-qr #qrTable td:nth-of-type(4):before { 
                 content: "QUANTITY"; 
                 font-weight: bold; 
                 font-size: 11px; 
@@ -422,8 +425,11 @@
             }
         }
 
+        /* ==========================================================================
+           PRINT OVERRIDES (Unified Print Engine Behavior)
+           ========================================================================== */
         @media print {
-            .sticky-header, .no-print, .footer-banner, .row-preview-container, .portal-container { 
+            .portal-container, .sticky-header, .no-print, .footer-banner, .row-preview-container { 
                 display: none !important; 
             }
 
@@ -431,10 +437,22 @@
                 background: white; 
                 display: block; 
                 height: auto; 
+                overflow: visible !important;
             }
 
             .main-wrapper { 
                 display: block; 
+            }
+
+            .app-view {
+                display: none !important;
+            }
+            
+            /* Show only active module layout context window */
+            .app-view-active-mrp #mrp-screen,
+            .app-view-active-qr #qr-screen {
+                display: block !important;
+                height: auto !important;
             }
 
             .preview-side { 
@@ -443,21 +461,22 @@
                 display: block !important; 
             }
 
-            .sticker, .mrp-sticker { 
-                border: none; 
-                margin: 0 auto; 
-                page-break-after: always; 
+            .sticker-mrp, .sticker-qr { 
+                border: none !important; 
+                margin: 0 auto !important; 
+                page-break-after: always !important; 
             }
         }
     </style>
 </head>
 <body>
 
+<!-- MAIN PORTAL ENTRY SCREEN -->
 <div id="portal-screen" class="portal-container">
     <div class="portal-card">
         <div class="mb-4">
             <img src="logo.png" alt="Logo" style="height: 60px;" onerror="this.style.display='none'">
-            <h2 class="mt-2 fw-bold" style="color: #002d72;">AL JARAD LABEL MANAGEMENT SYSTEMS</h2>
+            <h2 class="mt-2 fw-bold" style="color: #002d72;">AL JARAD MANAGEMENT SYSTEMS</h2>
             <p class="text-muted">Select a processing application tool below to begin layout assembly</p>
         </div>
         <div class="row g-4">
@@ -478,22 +497,24 @@
 </div>
 
 
-<div id="qr-screen" style="display: none; height: 100vh; flex-direction: column;">
+<!-- ==========================================================================
+     MODULE 1: QR CODE / BARCODE UTILITY (ORIGINAL: COPY.HTML)
+     ========================================================================== -->
+<div id="qr-screen" class="app-view">
     <div class="sticky-header no-print">
         <div class="header-box shadow-sm mb-3 position-relative">
-            <button onclick="switchView('portal-screen')" class="btn btn-sm btn-outline-secondary position-absolute start-0 top-50 translate-middle-y ms-3 fw-bold">← Back to Home</button>
+            <button onclick="goHome()" class="btn btn-sm btn-secondary position-absolute start-0 top-50 translate-middle-y ms-3">← Back</button>
             <div class="d-flex align-items-center justify-content-center gap-3">
                 <img src="logo.png" alt="Logo" style="height: 40px;" onerror="this.style.display='none'">
-                <h4 class="m-0 fw-bold">AL JARAD (QR & BARCODE)</h4>
+                <h4 class="m-0 fw-bold">AL JARAD - QR UTILITY</h4>
             </div>
         </div>
-
         <div class="row g-3">
             <div class="col-12 col-md-9">
-                <button onclick="addRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
+                <button onclick="addQrRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
             </div>
             <div class="col-12 col-md-3">
-                <button onclick="handlePrint()" class="btn btn-outline-success w-100 fw-bold py-2 shadow">PRINT</button>
+                <button onclick="handleQrPrint()" class="btn btn-outline-success w-100 fw-bold py-2 shadow">PRINT</button>
             </div>
         </div>
     </div>
@@ -501,32 +522,32 @@
     <div class="main-wrapper">
         <div class="editor-side no-print">
             <div class="table-container">
-                <table class="table table-bordered align-middle" id="inputTable">
+                <table class="table table-bordered align-middle" id="qrTable">
                     <thead>
                         <tr>
                             <th style="min-width: 250px;">ITEM DESCRIPTION</th>
                             <th style="min-width: 150px;">VALUE / CODE</th>
                             <th style="min-width: 220px;">SETTINGS</th>
-                            <th style="width: 100px;">QTY</th>
+                            <th style="width: 100px;">QUANTITY</th>
                             <th style="width: 50px;"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <input type="text" class="form-control in-name mb-2" oninput="updatePreview()" placeholder="Text">
+                                <input type="text" class="form-control in-name mb-2" oninput="updateQrPreview()" placeholder="Text">
                                 <div class="d-flex gap-2 align-items-center">
-                                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updatePreview()" title="Font Size" style="width: 60px;">
-                                    <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updatePreview()" title="Text Color" style="width: 40px; padding: 2px;">
+                                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updateQrPreview()" title="Font Size" style="width: 60px;">
+                                    <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updateQrPreview()" title="Text Color" style="width: 40px; padding: 2px;">
                                     <div class="form-check pt-1">
-                                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updatePreview()">
+                                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updateQrPreview()">
                                         <label class="form-check-label small">Bold</label>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <input type="text" class="form-control in-barcode mb-2" oninput="updatePreview()" placeholder="Code Value">
-                                <select class="form-select form-select-sm type-select" onchange="updatePreview()">
+                                <input type="text" class="form-control in-barcode mb-2" oninput="updateQrPreview()" placeholder="Code Value">
+                                <select class="form-select form-select-sm type-select" onchange="updateQrPreview()">
                                         <option value="barcode">Barcode</option>
                                         <option value="qrcode">QR Code</option>
                                         <option value="microqrcode">Micro QR</option>
@@ -537,21 +558,21 @@
                                 <div class="d-flex flex-column gap-2">
                                     <div class="d-flex gap-3 mb-1">
                                         <div class="form-check">
-                                            <input class="form-check-input check-logo" type="checkbox" checked onchange="updatePreview()">
+                                            <input class="form-check-input check-logo" type="checkbox" checked onchange="updateQrPreview()">
                                             <label class="form-check-label small">Logo</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input check-brand" type="checkbox" checked onchange="updatePreview()">
+                                            <input class="form-check-input check-brand" type="checkbox" checked onchange="updateQrPreview()">
                                             <label class="form-check-label small">Brand</label>
                                         </div>
                                     </div>
                                     <div class="brand-config border-top pt-2">
                                         <label class="small fw-bold d-block mb-1">Brand Style:</label>
                                         <div class="d-flex gap-1 align-items-center mb-1">
-                                            <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updatePreview()" title="Brand Size" style="width:50px">
-                                            <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updatePreview()" title="Brand Color" style="width:40px; padding:2px;">
+                                            <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updateQrPreview()" style="width:50px">
+                                            <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updateQrPreview()" style="width:40px; padding:2px;">
                                             <div class="form-check ms-1">
-                                                <input class="form-check-input brand-bold" type="checkbox" checked onchange="updatePreview()">
+                                                <input class="form-check-input brand-bold" type="checkbox" checked onchange="updateQrPreview()">
                                                 <label class="form-check-label small">B</label>
                                             </div>
                                         </div>
@@ -562,8 +583,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
-                            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>
+                            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updateQrPreview()"></td>
+                            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteQrRow(this)">X</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -572,7 +593,7 @@
 
         <div class="preview-side border-start shadow-sm">
             <h6 class="text-center text-muted mb-3 no-print">LIVE PREVIEW</h6>
-            <div id="print-area"></div>
+            <div id="qr-print-area"></div>
         </div>
 
         <div class="footer-banner no-print">Developed By Muhsin</div>
@@ -580,16 +601,18 @@
 </div>
 
 
-<div id="mrp-screen" style="display: none; height: 100vh; flex-direction: column;">
+<!-- ==========================================================================
+     MODULE 2: MRP LABEL GENERATOR (ORIGINAL: INDEX.HTML)
+     ========================================================================== -->
+<div id="mrp-screen" class="app-view">
     <div class="sticky-header no-print">
         <div class="header-box shadow-sm mb-3 position-relative">
-            <button onclick="switchView('portal-screen')" class="btn btn-sm btn-outline-secondary position-absolute start-0 top-50 translate-middle-y ms-3 fw-bold">← Back to Home</button>
+            <button onclick="goHome()" class="btn btn-sm btn-secondary position-absolute start-0 top-50 translate-middle-y ms-3">← Back</button>
             <div class="d-flex align-items-center justify-content-center gap-3">
                 <img src="logo.png" alt="Logo" style="height: 40px;" onerror="this.style.display='none'">
-                <h4 class="m-0 fw-bold">AL JARAD (MRP STICKERS)</h4>
+                <h4 class="m-0 fw-bold">AL JARAD - MRP UTILITY</h4>
             </div>
         </div>
-
         <div class="row g-3">
             <div class="col-12 col-md-9">
                 <button onclick="addMrpRow()" class="btn btn-outline-primary w-100 py-2 fw-bold">+ Add New Row</button>
@@ -603,7 +626,7 @@
     <div class="main-wrapper">
         <div class="editor-side no-print">
             <div class="table-container">
-                <table class="table table-bordered align-middle" id="mrpInputTable">
+                <table class="table table-bordered align-middle" id="mrpTable">
                     <thead>
                         <tr>
                             <th style="width: 22%;">ITEM DETAILS</th>
@@ -691,40 +714,61 @@
     </div>
 </div>
 
+
+<!-- ==========================================================================
+     CORE JAVASCRIPT SYSTEM ENGINE
+     ========================================================================== -->
 <script>
-    function switchView(screenId) {
+    let activeMode = 'portal';
+
+    // View Switching Engine logic
+    function switchView(targetScreenId) {
         document.getElementById('portal-screen').style.display = 'none';
         document.getElementById('qr-screen').style.display = 'none';
         document.getElementById('mrp-screen').style.display = 'none';
         
-        if(screenId === 'portal-screen') {
-            document.getElementById('portal-screen').style.display = 'flex';
-        } else {
-            document.getElementById(screenId).style.display = 'flex';
-        }
+        document.getElementById(targetScreenId).style.display = 'flex';
         
-        if(screenId === 'qr-screen') { updatePreview(); }
-        if(screenId === 'mrp-screen') { updateMrpPreview(); }
+        if(targetScreenId === 'qr-screen') {
+            activeMode = 'qr';
+            document.body.className = "app-view-active-qr";
+            updateQrPreview();
+        } else if(targetScreenId === 'mrp-screen') {
+            activeMode = 'mrp';
+            document.body.className = "app-view-active-mrp";
+            updateMrpPreview();
+        }
     }
 
-    function addRow() {
-        const tbody = document.querySelector("#inputTable tbody");
+    function goHome() {
+        activeMode = 'portal';
+        document.body.className = "";
+        document.getElementById('qr-screen').style.display = 'none';
+        document.getElementById('mrp-screen').style.display = 'none';
+        document.getElementById('portal-screen').style.display = 'flex';
+    }
+
+    /* ==========================================================================
+       QR MODULE ENGINES & ACTIONS (COPY.HTML TRANSLATION)
+       ========================================================================== */
+    function addQrRow() {
+        const tbody = document.querySelector("#qrTable tbody");
         const row = tbody.insertRow();
         row.innerHTML = `
             <td>
-                <input type="text" class="form-control in-name mb-2" oninput="updatePreview()" placeholder="Item Name">
+                <input type="text" class="form-control in-name mb-2" oninput="updateQrPreview()" placeholder="Item Name">
                 <div class="d-flex gap-2 align-items-center">
-                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updatePreview()" title="Font Size" style="width:60px;">
-                    <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updatePreview()" title="Text Color" style="width:40px; padding:2px;">
+                    <input type="number" class="form-control form-control-sm in-font-size" value="10" min="6" max="20" oninput="updateQrPreview()" title="Font Size" style="width:60px;">
+                    <input type="color" class="form-control form-control-sm in-text-color" value="#000000" oninput="updateQrPreview()" title="Text Color" style="width:40px; padding:2px;">
                     <div class="form-check pt-1">
-                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updatePreview()">
+                        <input class="form-check-input check-bold" type="checkbox" checked onchange="updateQrPreview()">
                         <label class="form-check-label small">Bold</label>
                     </div>
                 </div>
             </td>
             <td>
-                <input type="text" class="form-control in-barcode mb-2" oninput="updatePreview()" placeholder="Code Value">
-                <select class="form-select form-select-sm type-select" onchange="updatePreview()">
+                <input type="text" class="form-control in-barcode mb-2" oninput="updateQrPreview()" placeholder="Code Value">
+                <select class="form-select form-select-sm type-select" onchange="updateQrPreview()">
                         <option value="barcode">Barcode (Code 128)</option>
                         <option value="qrcode">QR Code</option>
                         <option value="microqrcode">Micro QR</option>
@@ -735,21 +779,21 @@
                 <div class="d-flex flex-column gap-2">
                     <div class="d-flex gap-3 mb-1">
                         <div class="form-check">
-                            <input class="form-check-input check-logo" type="checkbox" checked onchange="updatePreview()">
+                            <input class="form-check-input check-logo" type="checkbox" checked onchange="updateQrPreview()">
                             <label class="form-check-label small">Logo</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input check-brand" type="checkbox" checked onchange="updatePreview()">
+                            <input class="form-check-input check-brand" type="checkbox" checked onchange="updateQrPreview()">
                             <label class="form-check-label small">Brand</label>
                         </div>
                     </div>
                     <div class="brand-config border-top pt-2">
                         <label class="small fw-bold d-block mb-1">Brand Style:</label>
                         <div class="d-flex gap-1 align-items-center mb-1">
-                            <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updatePreview()" style="width:50px">
-                            <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updatePreview()" style="width:40px; padding:2px;">
+                            <input type="number" class="form-control form-control-sm brand-font-size" value="9" min="5" max="15" oninput="updateQrPreview()" style="width:50px">
+                            <input type="color" class="form-control form-control-sm brand-color" value="#002d72" oninput="updateQrPreview()" style="width:40px; padding:2px;">
                             <div class="form-check ms-1">
-                                <input class="form-check-input brand-bold" type="checkbox" checked onchange="updatePreview()">
+                                <input class="form-check-input brand-bold" type="checkbox" checked onchange="updateQrPreview()">
                                 <label class="form-check-label small">B</label>
                             </div>
                         </div>
@@ -760,22 +804,22 @@
                     </div>
                 </div>
             </td>
-            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updatePreview()"></td>
-            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteRow(this)">X</button></td>`;
+            <td><input type="number" class="form-control in-qty" value="1" min="1" oninput="updateQrPreview()"></td>
+            <td class="text-center"><button class="btn btn-outline-danger btn-sm px-3 fw-bold" onclick="deleteQrRow(this)">X</button></td>`;
             
         const editor = document.querySelector('#qr-screen .editor-side');
         editor.scrollTop = editor.scrollHeight;
-        updatePreview();
+        updateQrPreview();
     }
 
-    function deleteRow(btn) {
-        if (document.querySelectorAll("#inputTable tbody tr").length > 1) {
+    function deleteQrRow(btn) {
+        if (document.querySelectorAll("#qrTable tbody tr").length > 1) {
             btn.closest('tr').remove();
-            updatePreview();
+            updateQrPreview();
         }
     }
 
-    function createStickerElement(row, isFullPrint) {
+    function createQrStickerElement(row) {
         const name = row.querySelector('.in-name').value.trim();
         const val = row.querySelector('.in-barcode').value.trim();
         const showLogo = row.querySelector('.check-logo').checked;
@@ -790,11 +834,11 @@
         const brandStyle = `font-size: ${brandFontSize}; color: ${brandColor}; font-weight: ${brandIsBold ? 'bold' : 'normal'};`;
         
         const sticker = document.createElement('div');
-        const id = "c-" + Math.random().toString(36).substr(2, 7);
+        const id = "q-" + Math.random().toString(36).substr(2, 7);
         const nameStyle = `font-size: ${fontSize}; font-weight: ${isBold ? 'bold' : 'normal'}; color: ${textColor};`;
 
         if (codeType === 'barcode') {
-            sticker.className = 'sticker style-barcode';
+            sticker.className = 'sticker-qr style-barcode';
             let html = '<div class="barcode-container">';
             if(showLogo || showBrand) {
                 html += `<div class="d-flex align-items-center justify-content-center gap-1 mb-1">`;
@@ -802,12 +846,12 @@
                 if(showBrand) html += `<span style="${brandStyle}">AL JARAD</span>`;
                 html += `</div>`;
             }
-            if(name) html += `<div class="item-name-display" style="${nameStyle}">${name}</div>`;
-            if(val) html += `<svg class="barcode-svg" id="${id}"></svg>`;
+            if(name) html += `<div class="item-name-display-qr" style="${nameStyle}">${name}</div>`;
+            if(val) html += `<svg class="barcode-svg-qr" id="${id}"></svg>`;
             html += '</div>';
             sticker.innerHTML = html;
         } else {
-            sticker.className = 'sticker style-qrcode';
+            sticker.className = 'sticker-qr style-qrcode';
             let brandHtml = '';
             if (showBrand) {
                 const brandClass = !showLogo ? 'brand-rotated' : '';
@@ -830,7 +874,7 @@
         return { element: sticker, id: id, val: val, type: codeType };
     }
 
-    function renderCode(id, val, type) {
+    function renderQrCodeCode(id, val, type) {
         if (!val) return;
         try {
             if (type === 'barcode') {
@@ -851,37 +895,41 @@
         }
     }
 
-    function renderStickers(isFullPrint) {
-        const printArea = document.getElementById('print-area');
+    function renderQrStickers(isFullPrint) {
+        const printArea = document.getElementById('qr-print-area');
         printArea.innerHTML = '';
-        const rows = document.querySelectorAll("#inputTable tbody tr");
+        const rows = document.querySelectorAll("#qrTable tbody tr");
 
         rows.forEach(row => {
             const qty = isFullPrint ? (parseInt(row.querySelector('.in-qty').value) || 0) : 1;
             const mobilePreviewTarget = row.querySelector('.row-preview-target');
-            if (mobilePreviewTarget) mobilePreviewTarget.innerHTML = ''; 
+            if (mobilePreviewTarget) mobilePreviewTarget.innerHTML = '';
 
-            const previewData = createStickerElement(row, false);
+            const previewData = createQrStickerElement(row);
             if (mobilePreviewTarget) mobilePreviewTarget.appendChild(previewData.element);
-            renderCode(previewData.id, previewData.val, previewData.type);
+            renderQrCodeCode(previewData.id, previewData.val, previewData.type);
 
             const name = row.querySelector('.in-name').value.trim();
             const val = row.querySelector('.in-barcode').value.trim();
             if (name || val) {
                 for (let i = 0; i < qty; i++) {
-                    const printData = createStickerElement(row, true);
+                    const printData = createQrStickerElement(row);
                     printArea.appendChild(printData.element);
-                    renderCode(printData.id, printData.val, printData.type);
+                    renderQrCodeCode(printData.id, printData.val, printData.type);
                 }
             }
         });
     }
 
-    function updatePreview() { renderStickers(false); }
-    function handlePrint() { renderStickers(true); setTimeout(() => { window.print(); renderStickers(false); }, 600); }
+    function updateQrPreview() { renderQrStickers(false); }
+    function handleQrPrint() { renderQrStickers(true); setTimeout(() => { window.print(); renderQrStickers(false); }, 600); }
 
+
+    /* ==========================================================================
+       MRP MODULE ENGINES & ACTIONS (INDEX.HTML TRANSLATION)
+       ========================================================================== */
     function addMrpRow() {
-        const tbody = document.querySelector("#mrpInputTable tbody");
+        const tbody = document.querySelector("#mrpTable tbody");
         const row = tbody.insertRow();
         row.innerHTML = `
             <td>
@@ -951,7 +999,7 @@
     }
 
     function deleteMrpRow(btn) {
-        if (document.querySelectorAll("#mrpInputTable tbody tr").length > 1) {
+        if (document.querySelectorAll("#mrpTable tbody tr").length > 1) {
             btn.closest('tr').remove();
             updateMrpPreview();
         }
@@ -984,32 +1032,32 @@
         const isDateValBold = row.querySelector('.check-date-val-bold').checked ? 'bold' : 'normal';
 
         const sticker = document.createElement('div');
-        sticker.className = 'mrp-sticker';
+        sticker.className = 'sticker-mrp';
         
-        const id = "mrp-" + Math.random().toString(36).substr(2, 7);
+        const id = "m-" + Math.random().toString(36).substr(2, 7);
         const nameStyle = `font-size: ${fontSize}; font-weight: ${isBold ? 'bold' : 'normal'}; color: #000000;`;
         const priceStyle = `font-size: ${priceFontSize}; font-weight: ${isPriceBold ? 'bold' : 'normal'}; color: #000000;`;
 
-        let mainContentHtml = `<div class="mrp-sticker-main-content">`;
+        let mainContentHtml = `<div class="sticker-main-content">`;
         if (name) {
-            mainContentHtml += `<div class="mrp-item-name-display" style="${nameStyle}">${name}</div>`;
+            mainContentHtml += `<div class="item-name-display-mrp" style="${nameStyle}">${name}</div>`;
         }
         if (val) {
-            mainContentHtml += `<svg class="mrp-barcode-svg" id="${id}"></svg>`;
+            mainContentHtml += `<svg class="barcode-svg-mrp" id="${id}"></svg>`;
         }
         if (priceRaw) {
-            mainContentHtml += `<div class="mrp-price-display" style="${priceStyle}">${formatPrice(priceRaw)}</div>`;
+            mainContentHtml += `<div class="price-display" style="${priceStyle}">${formatPrice(priceRaw)}</div>`;
         }
         mainContentHtml += `</div>`;
 
         let datesSideHtml = '';
         if (pkd || exp) {
-            datesSideHtml += `<div class="mrp-sticker-dates-side" style="font-size: ${dateFontSize}; color: #000000;">`;
+            datesSideHtml += `<div class="sticker-dates-side" style="font-size: ${dateFontSize}; color: #000000;">`;
             if (pkd) {
-                datesSideHtml += `<div class="mrp-date-rotated-box"><span style="font-weight: ${isDateLblBold}">PKD :</span> <span style="font-weight: ${isDateValBold}">${pkd}</span></div>`;
+                datesSideHtml += `<div class="date-rotated-box"><span style="font-weight: ${isDateLblBold}">PKD :</span> <span style="font-weight: ${isDateValBold}">${pkd}</span></div>`;
             }
             if (exp) {
-                datesSideHtml += `<div class="mrp-date-rotated-box"><span style="font-weight: ${isDateLblBold}">EXP :</span> <span style="font-weight: ${isDateValBold}">${exp}</span></div>`;
+                datesSideHtml += `<div class="date-rotated-box"><span style="font-weight: ${isDateLblBold}">EXP :</span> <span style="font-weight: ${isDateValBold}">${exp}</span></div>`;
             }
             datesSideHtml += `</div>`;
         }
@@ -1030,7 +1078,7 @@
         };
     }
 
-    function renderMrpCode(config) {
+    function renderMrpBarcodeCode(config) {
         if (!config.val) return; 
         try {
             JsBarcode(`#${config.id}`, config.val, { 
@@ -1050,7 +1098,7 @@
     function renderMrpStickers(isFullPrint) {
         const printArea = document.getElementById('mrp-print-area');
         printArea.innerHTML = '';
-        const rows = document.querySelectorAll("#mrpInputTable tbody tr");
+        const rows = document.querySelectorAll("#mrpTable tbody tr");
 
         rows.forEach(row => {
             const name = row.querySelector('.in-name').value.trim();
@@ -1068,7 +1116,7 @@
             for (let i = 0; i < qty; i++) {
                 const config = createMrpStickerElement(row);
                 printArea.appendChild(config.element);
-                renderMrpCode(config);
+                renderMrpBarcodeCode(config);
             }
         });
     }
@@ -1077,39 +1125,45 @@
     function handleMrpPrint() { renderMrpStickers(true); setTimeout(() => { window.print(); renderMrpStickers(false); }, 600); }
 
 
+    /* ==========================================================================
+       GLOBAL TAB NAV KEYBOARD ENGINE (ENTER NAVIGATION RULES)
+       ========================================================================== */
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
             e.preventDefault();
             
-            const isQrActive = document.getElementById('qr-screen').style.display === 'flex';
-            const tableId = isQrActive ? '#inputTable' : '#mrpInputTable';
-            
-            const inputs = Array.from(document.querySelectorAll(`${tableId} input[type="text"], ${tableId} input[type="number"]`));
-            const idx = inputs.indexOf(e.target);
-            
-            if (idx < inputs.length - 1) {
-                inputs[idx + 1].focus();
-            } else {
-                if (isQrActive) {
-                    addRow();
-                    setTimeout(() => {
-                        const next = document.querySelectorAll('#inputTable input[type="text"]');
-                        next[next.length - 2].focus();
-                    }, 50);
+            if (activeMode === 'mrp') {
+                const inputs = Array.from(document.querySelectorAll('#mrpTable input[type="text"], #mrpTable input[type="number"]'));
+                const idx = inputs.indexOf(e.target);
+                if (idx < inputs.length - 1) {
+                    inputs[idx + 1].focus();
                 } else {
                     addMrpRow();
                     setTimeout(() => {
-                        const next = document.querySelectorAll('#mrpInputTable input[type="text"]');
+                        const next = document.querySelectorAll('#mrpTable input[type="text"]');
                         next[next.length - 4].focus(); 
+                    }, 50);
+                }
+            } else if (activeMode === 'qr') {
+                const inputs = Array.from(document.querySelectorAll('#qrTable input[type="text"], #qrTable input[type="number"]'));
+                const idx = inputs.indexOf(e.target);
+                if (idx < inputs.length - 1) {
+                    inputs[idx + 1].focus();
+                } else {
+                    addQrRow();
+                    setTimeout(() => {
+                        const next = document.querySelectorAll('#qrTable input[type="text"]');
+                        next[next.length - 2].focus();
                     }, 50);
                 }
             }
         }
     });
 
+    // Default initialization view on boot
     window.onload = function() {
-        switchView('portal-screen');
+        goHome();
     };
 </script>
 </body>
-</html
+</html>
